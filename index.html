@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alien Flappy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="game-container">
+
+        <h1>👽 Alien Flappy</h1>
+
+        <div class="game-info">
+            <span>Pontos: <strong id="score">0</strong></span>
+            <span>Recorde: <strong id="highScore">0</strong></span>
+        </div>
+
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+        <div id="startScreen" class="screen">
+            <h2>ALIEN FLAPPY</h2>
+            <p>Ajude o alienígena a atravessar o espaço!</p>
+            <p class="instruction">
+                Pressione <strong>ESPAÇO</strong> ou clique para voar
+            </p>
+            <button id="startButton">COMEÇAR</button>
+        </div>
+
+        <div id="gameOverScreen" class="screen hidden">
+            <h2>FIM DE JOGO</h2>
+            <p>Pontuação: <strong id="finalScore">0</strong></p>
+            <button id="restartButton">JOGAR NOVAMENTE</button>
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

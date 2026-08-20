@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: Arial, sans-serif;
+
+    background:
+        radial-gradient(circle at 20% 20%, #123b63 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, #073d2b 0%, transparent 25%),
+        #020b18;
+
+    color: white;
+}
+
+.game-container {
+    position: relative;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 12px;
+
+    color: #39ff88;
+
+    text-shadow:
+        0 0 10px #39ff88,
+        0 0 20px #39ff88;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+
+    width: 400px;
+    margin-bottom: 8px;
+
+    color: #69cfff;
+    font-size: 18px;
+}
+
+.game-info strong {
+    color: #39ff88;
+}
+
+canvas {
+    display: block;
+
+    border: 3px solid #39ff88;
+    border-radius: 10px;
+
+    background: #061b30;
+
+    box-shadow:
+        0 0 15px #39ff88,
+        0 0 30px rgba(57, 255, 136, 0.25);
+}
+
+/* Telas de início e fim */
+
+.screen {
+    position: absolute;
+
+    width: 340px;
+    padding: 30px;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    background: rgba(2, 11, 24, 0.94);
+
+    border: 2px solid #39ff88;
+    border-radius: 15px;
+
+    box-shadow: 0 0 30px rgba(57, 255, 136, 0.4);
+}
+
+.screen h2 {
+    margin-bottom: 15px;
+
+    color: #39ff88;
+}
+
+.screen p {
+    margin: 10px 0;
+    color: #bdeaff;
+}
+
+.instruction {
+    font-size: 14px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px 25px;
+
+    border: 2px solid #39ff88;
+    border-radius: 8px;
+
+    background: #0b5f43;
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #39ff88;
+    color: #02120b;
+
+    box-shadow: 0 0 15px #39ff88;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Responsividade */
+
+@media (max-width: 500px) {
+
+    .game-info,
+    canvas {
+        width: 90vw;
+    }
+
+    canvas {
+        height: auto;
+    }
+
+    .screen {
+        width: 75vw;
+    }
+}
