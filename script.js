@@ -273,9 +273,10 @@ function drawPipe(pipe) {
 // ============================
 
 const stars = [];
+const planets = [];
 
+// Estrelas
 for (let i = 0; i < 70; i++) {
-
     stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -284,11 +285,49 @@ for (let i = 0; i < 70; i++) {
     });
 }
 
+// Planetas
+planets.push(
+    {
+        x: 70,
+        y: 100,
+        radius: 35,
+        color: "#1464a5",
+        atmosphere: "#69cfff",
+        speed: 0.15
+    },
+    {
+        x: 330,
+        y: 180,
+        radius: 22,
+        color: "#0b8f63",
+        atmosphere: "#39ff88",
+        speed: 0.25
+    },
+    {
+        x: 280,
+        y: 480,
+        radius: 45,
+        color: "#164b72",
+        atmosphere: "#69cfff",
+        speed: 0.1
+    }
+);
+
 
 function drawBackground() {
 
-    // Fundo
-    ctx.fillStyle = "#061b30";
+    // Fundo espacial
+    const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        0,
+        canvas.height
+    );
+
+    gradient.addColorStop(0, "#020b18");
+    gradient.addColorStop(1, "#062b3d");
+
+    ctx.fillStyle = gradient;
 
     ctx.fillRect(
         0,
@@ -298,7 +337,115 @@ function drawBackground() {
     );
 
 
-    // Estrelas
+    // ============================
+    // PLANETAS
+    // ============================
+
+    for (let planet of planets) {
+
+        // Atmosfera
+        ctx.beginPath();
+
+        ctx.arc(
+            planet.x,
+            planet.y,
+            planet.radius + 5,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = planet.atmosphere;
+        ctx.globalAlpha = 0.15;
+
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+
+
+        // Planeta
+        const planetGradient = ctx.createRadialGradient(
+            planet.x - planet.radius * 0.35,
+            planet.y - planet.radius * 0.35,
+            2,
+            planet.x,
+            planet.y,
+            planet.radius
+        );
+
+        planetGradient.addColorStop(
+            0,
+            planet.atmosphere
+        );
+
+        planetGradient.addColorStop(
+            0.5,
+            planet.color
+        );
+
+        planetGradient.addColorStop(
+            1,
+            "#02111f"
+        );
+
+        ctx.beginPath();
+
+        ctx.arc(
+            planet.x,
+            planet.y,
+            planet.radius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = planetGradient;
+
+        ctx.fill();
+
+
+        // Anel em alguns planetas
+        if (planet.radius > 30) {
+
+            ctx.beginPath();
+
+            ctx.ellipse(
+                planet.x,
+                planet.y,
+                planet.radius * 1.5,
+                planet.radius * 0.35,
+                -0.2,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.strokeStyle = planet.atmosphere;
+            ctx.globalAlpha = 0.35;
+            ctx.lineWidth = 3;
+
+            ctx.stroke();
+
+            ctx.globalAlpha = 1;
+        }
+
+
+        // Movimento lento
+        if (gameRunning) {
+
+            planet.x -= planet.speed;
+
+            if (
+                planet.x + planet.radius < 0
+            ) {
+                planet.x =
+                    canvas.width + planet.radius;
+            }
+        }
+    }
+
+
+    // ============================
+    // ESTRELAS
+    // ============================
+
     for (let star of stars) {
 
         ctx.fillStyle = "#69cfff";
@@ -314,6 +461,7 @@ function drawBackground() {
         );
 
         ctx.fill();
+
 
         if (gameRunning) {
 
