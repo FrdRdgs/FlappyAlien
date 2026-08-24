@@ -35,6 +35,9 @@ let score = 0;
 let powerReady = true;
 let projectile = null;
 
+const powerCooldown = 10000; // 10 segundos
+let powerCooldownStart = 0;
+
 let highScore = localStorage.getItem("alienFlappyHighScore") || 0;
 
 highScoreElement.textContent = highScore;
@@ -170,9 +173,15 @@ function usePower() {
         return;
     }
 
+    if (pipes.length === 0) {
+        return;
+    }
+
     powerReady = false;
 
-    powerStatus.textContent = "USADO";
+    powerCooldownStart = Date.now();
+
+    powerStatus.textContent = "RECARREGANDO...";
     powerButton.disabled = true;
 
     projectile = {
@@ -182,8 +191,28 @@ function usePower() {
         width: 30,
         height: 6,
 
-        speed: 8
+        speed: 8,
+
+        targetPipe: pipes[0]
     };
+}
+
+function updatePowerCooldown() {
+
+    if (powerReady || !gameRunning) {
+        return;
+    }
+
+    const elapsed =
+        Date.now() - powerCooldownStart;
+
+    if (elapsed >= powerCooldown) {
+
+        powerReady = true;
+
+        powerStatus.textContent = "PRONTO";
+        powerButton.disabled = false;
+    }
 }
 
 
@@ -196,41 +225,17 @@ function updateProjectile() {
     projectile.x += projectile.speed;
 
 
-    // Verifica se atingiu algum obstáculo
-    for (let pipe of pipes) {
+    // Verifica se chegou ao obstáculo alvo
+    if (
+        projectile.targetPipe &&
+        projectile.x + projectile.width >= projectile.targetPipe.x
+    ) {
 
-        const projectileRight =
-            projectile.x + projectile.width;
+        projectile.targetPipe.destroyed = true;
 
-        const projectileBottom =
-            projectile.y + projectile.height;
+        projectile = null;
 
-        const pipeRight =
-            pipe.x + pipeWidth;
-
-
-        const horizontalCollision =
-            projectileRight > pipe.x &&
-            projectile.x < pipeRight;
-
-
-        const verticalCollision =
-            projectile.y < pipe.topHeight ||
-            projectileBottom > pipe.bottomY;
-
-
-        if (
-            horizontalCollision &&
-            verticalCollision
-        ) {
-
-            // Marca o obstáculo para remoção
-            pipe.destroyed = true;
-
-            projectile = null;
-
-            return;
-        }
+        return;
     }
 
 
@@ -600,6 +605,10 @@ function checkCollision() {
 
     for (let pipe of pipes) {
 
+        if (pipe.destroyed) {
+            continue;
+        }
+
         const alienRight =
             alien.x + alien.width;
 
@@ -680,6 +689,8 @@ function startGame() {
 
     powerReady = true;
 
+    powerCooldownStart = 0;
+
     powerStatus.textContent = "PRONTO";
     powerButton.disabled = false;
 
@@ -698,7 +709,6 @@ function gameLoop() {
 
     drawBackground();
 
-
     if (gameRunning) {
 
         alien.update();
@@ -706,6 +716,8 @@ function gameLoop() {
         updatePipes();
 
         updateProjectile();
+
+        updatePowerCooldown();
 
         if (checkCollision()) {
             gameOver();
