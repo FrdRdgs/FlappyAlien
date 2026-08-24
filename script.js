@@ -676,6 +676,13 @@ function startGame() {
 
     pipes = [];
 
+    projectile = null;
+
+    powerReady = true;
+
+    powerStatus.textContent = "PRONTO";
+    powerButton.disabled = false;
+
     createPipe();
 
     startScreen.classList.add("hidden");
