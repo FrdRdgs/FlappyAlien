@@ -10,6 +10,8 @@ const gameOverScreen = document.getElementById("gameOverScreen");
 
 const startButton = document.getElementById("startButton");
 const restartButton = document.getElementById("restartButton");
+const powerButton = document.getElementById("powerButton");
+const powerStatus = document.getElementById("powerStatus");
 
 
 // ============================
@@ -30,6 +32,8 @@ const pipeSpeed = 2.5;
 
 let gameRunning = false;
 let score = 0;
+let powerReady = true;
+let projectile = null;
 
 let highScore = localStorage.getItem("alienFlappyHighScore") || 0;
 
@@ -156,6 +160,107 @@ const alien = {
     }
 };
 
+// ============================
+// PODER DO ALIENÍGENA
+// ============================
+
+function usePower() {
+
+    if (!gameRunning || !powerReady) {
+        return;
+    }
+
+    powerReady = false;
+
+    powerStatus.textContent = "USADO";
+    powerButton.disabled = true;
+
+    projectile = {
+        x: alien.x + alien.width,
+        y: alien.y + alien.height / 2,
+
+        width: 30,
+        height: 6,
+
+        speed: 8
+    };
+}
+
+
+function updateProjectile() {
+
+    if (!projectile) {
+        return;
+    }
+
+    projectile.x += projectile.speed;
+
+
+    // Verifica se atingiu algum obstáculo
+    for (let pipe of pipes) {
+
+        const projectileRight =
+            projectile.x + projectile.width;
+
+        const projectileBottom =
+            projectile.y + projectile.height;
+
+        const pipeRight =
+            pipe.x + pipeWidth;
+
+
+        const horizontalCollision =
+            projectileRight > pipe.x &&
+            projectile.x < pipeRight;
+
+
+        const verticalCollision =
+            projectile.y < pipe.topHeight ||
+            projectileBottom > pipe.bottomY;
+
+
+        if (
+            horizontalCollision &&
+            verticalCollision
+        ) {
+
+            // Marca o obstáculo para remoção
+            pipe.destroyed = true;
+
+            projectile = null;
+
+            return;
+        }
+    }
+
+
+    // Remove o disparo quando sair da tela
+    if (projectile.x > canvas.width) {
+        projectile = null;
+    }
+}
+
+
+function drawProjectile() {
+
+    if (!projectile) {
+        return;
+    }
+
+    ctx.fillStyle = "#69cfff";
+
+    ctx.shadowColor = "#69cfff";
+    ctx.shadowBlur = 15;
+
+    ctx.fillRect(
+        projectile.x,
+        projectile.y,
+        projectile.width,
+        projectile.height
+    );
+
+    ctx.shadowBlur = 0;
+}
 
 // ============================
 // OBSTÁCULOS
@@ -205,9 +310,12 @@ function updatePipes() {
     }
 
 
-    // Remove obstáculos antigos
+    // Remove obstáculos destruídos
+    // ou que já saíram da tela
     pipes = pipes.filter(
-        pipe => pipe.x + pipeWidth > 0
+        pipe =>
+            !pipe.destroyed &&
+            pipe.x + pipeWidth > 0
     );
 
 
@@ -590,6 +698,7 @@ function gameLoop() {
 
         updatePipes();
 
+        updateProjectile();
 
         if (checkCollision()) {
             gameOver();
@@ -602,6 +711,8 @@ function gameLoop() {
         drawPipe(pipe);
     }
 
+    // Desenha disparo
+    drawProjectile();
 
     // Desenha alienígena
     alien.draw();
@@ -627,6 +738,13 @@ document.addEventListener("keydown", event => {
 
         alien.jump();
     }
+
+    if (event.code === "KeyE") {
+
+    event.preventDefault();
+
+    usePower();
+    }
 });
 
 
@@ -649,6 +767,10 @@ restartButton.addEventListener(
     startGame
 );
 
+powerButton.addEventListener(
+    "click",
+    usePower
+);
 
 // Inicia o loop
 gameLoop();

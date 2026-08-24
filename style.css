@@ -38,12 +38,35 @@ h1 {
 .game-info {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 
     width: 400px;
     margin-bottom: 8px;
 
     color: #69cfff;
-    font-size: 18px;
+    font-size: 16px;
+}
+
+#powerButton {
+    margin-top: 10px;
+    width: 100%;
+
+    border-color: #69cfff;
+
+    background: #123b63;
+}
+
+#powerButton:hover {
+    background: #69cfff;
+    color: #02120b;
+
+    box-shadow: 0 0 15px #69cfff;
+}
+
+#powerButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .game-info strong {
