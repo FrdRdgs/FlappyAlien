@@ -787,8 +787,13 @@ restartButton.addEventListener(
 );
 
 powerButton.addEventListener(
-    "click",
-    usePower
+    "pointerdown",
+    event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        usePower();
+    }
 );
 
 // Inicia o loop
